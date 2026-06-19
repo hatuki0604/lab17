@@ -1,0 +1,333 @@
+
+<h2 class="sr-only">Day 17 Lab v4 — Build-up Chain: Guest notes, 4 cách test rẻ hơn</h2>
+
+<style>
+  .board { font-family: var(--font-sans); padding: 1rem 0; }
+  .sl { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-tertiary); margin: 16px 0 6px; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); margin-bottom: 8px; }
+  .tag-purple { background: #EEEDFE; color: #3C3489; }
+  .tag-teal { background: #E1F5EE; color: #085041; }
+  .tag-amber { background: #FAEEDA; color: #633806; }
+  .tag-blue { background: #E6F1FB; color: #0C447C; }
+  .tag-coral { background: #FAECE7; color: #712B13; }
+  .tag-gray { background: #F1EFE8; color: #444441; }
+  .h3 { font-size: 15px; font-weight: 500; color: var(--color-text-primary); margin: 0 0 6px; }
+  .body { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; margin: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+  .row { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 5px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .dot-green { background: #1D9E75; }
+  .dot-red { background: #E24B4A; }
+  .dot-amber { background: #BA7517; }
+  .dot-blue { background: #378ADD; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 10px 0; }
+  .ml { font-size: 11px; color: var(--color-text-tertiary); margin: 0 0 2px; }
+  .mv { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 8px; line-height: 1.5; }
+  .cost-badge { display: inline-flex; align-items: center; gap: 4px; background: #EAF3DE; color: #27500A; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); margin-bottom: 8px; }
+  .time-badge { display: inline-flex; align-items: center; gap: 4px; background: #E6F1FB; color: #0C447C; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: var(--border-radius-md); margin-bottom: 8px; margin-left: 4px; }
+  .screen-mock { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 8px; margin: 6px 0; }
+  .screen-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 5px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 11px; gap: 6px; }
+  .screen-row:last-child { border-bottom: none; }
+  .badge-urgent { background: #FCEBEB; color: #791F1F; font-size: 10px; padding: 1px 6px; border-radius: var(--border-radius-md); white-space: nowrap; }
+  .badge-done { background: #E1F5EE; color: #085041; font-size: 10px; padding: 1px 6px; border-radius: var(--border-radius-md); white-space: nowrap; }
+  .badge-pending { background: #FAEEDA; color: #633806; font-size: 10px; padding: 1px 6px; border-radius: var(--border-radius-md); white-space: nowrap; }
+  .zalo-wrap { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 8px 10px; }
+  .zalo-sys { background: #E1F5EE; border-radius: 0 8px 8px 8px; padding: 6px 10px; font-size: 11px; color: #085041; margin: 4px 0; }
+  .zalo-rep { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 8px 0 8px 8px; padding: 6px 10px; font-size: 11px; color: var(--color-text-primary); margin: 4px 0 4px auto; max-width: 85%; }
+  .zalo-warn { background: #FCEBEB; border-radius: 0 8px 8px 8px; padding: 6px 10px; font-size: 11px; color: #791F1F; margin: 4px 0; }
+  .zalo-name { font-size: 10px; color: var(--color-text-tertiary); margin: 5px 0 1px; }
+  .note-paper { background: #FAEEDA; border-radius: var(--border-radius-md); padding: 8px 10px; font-size: 11px; color: #412402; line-height: 1.8; border-left: 3px solid #BA7517; }
+  .cal-event { background: #E6F1FB; border-left: 3px solid #185FA5; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 5px 8px; font-size: 11px; color: #0C447C; margin: 4px 0; }
+  .cal-event-warn { background: #FCEBEB; border-left: 3px solid #A32D2D; border-radius: 0 var(--border-radius-md) var(--border-radius-md) 0; padding: 5px 8px; font-size: 11px; color: #791F1F; margin: 4px 0; }
+  .cal-time { font-size: 10px; color: var(--color-text-tertiary); margin-bottom: 2px; }
+  .compare-row { display: grid; grid-template-columns: 100px 1fr 1fr 1fr 1fr; gap: 6px; align-items: start; padding: 7px 0; border-bottom: 0.5px solid var(--color-border-tertiary); font-size: 11px; }
+  .compare-row:last-child { border-bottom: none; }
+  .cl { color: var(--color-text-tertiary); font-weight: 500; font-size: 11px; }
+  .cc { color: var(--color-text-secondary); font-size: 11px; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+  .pill { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: 20px; padding: 2px 8px; font-size: 10px; color: var(--color-text-secondary); }
+  .pain-box { background: #FCEBEB; border-radius: var(--border-radius-md); padding: 8px 10px; font-size: 12px; color: #791F1F; margin: 6px 0; line-height: 1.6; }
+</style>
+
+<div class="board">
+
+  <!-- JTBD -->
+  <div class="sl">Bước 0 — JTBD Checkpoint</div>
+  <div class="card" style="margin-bottom:10px;">
+    <div class="grid2">
+      <div>
+        <p class="ml">Core JTBD</p>
+        <p class="mv">Nhân viên khách sạn cần nắm đúng và đủ yêu cầu đặc biệt của từng khách — để phục vụ đúng mà không cần ai nhắc lại, kể cả khi bàn giao ca</p>
+        <p class="ml">Pain step đau nhất</p>
+        <p class="mv">Yêu cầu khách nói miệng hoặc nhắn Zalo → không ai ghi tập trung → ca sau không biết → khách phải nhắc lại hoặc bị phục vụ sai → nhân viên phát hiện sót rồi phải nhắn ngược lại quản lý ("em quên thu 63k phòng 205")</p>
+      </div>
+      <div>
+        <p class="ml">Current workflow</p>
+        <p class="mv">Khách check-in → nói yêu cầu miệng / nhắn Zalo → lễ tân nhớ hoặc ghi tay → bàn giao ca bằng miệng → ca sau thiếu thông tin → sai sót → báo lại quản lý sau</p>
+        <p class="ml">AI leverage point</p>
+        <p class="mv">Bước chuyển từ "yêu cầu rải rác nhiều nơi" → "note tập trung theo phòng, cả team thấy, có nhắc đúng giờ, không cần báo ngược lại sau"</p>
+      </div>
+    </div>
+    <hr class="divider">
+    <p class="ml">Ví dụ yêu cầu thực tế</p>
+    <div class="pill-row">
+      <span class="pill">💰 Trả tiền phòng sau</span>
+      <span class="pill">🌿 Khử mùi trước khi vào</span>
+      <span class="pill">🛗 Phòng gần thang máy</span>
+      <span class="pill">🛏 Thêm gối</span>
+      <span class="pill">🚫 Không dọn buổi sáng</span>
+      <span class="pill">🍼 Nước nóng pha sữa</span>
+      <span class="pill">⏰ Wake-up call 6h</span>
+      <span class="pill">🐾 Có thú cưng</span>
+    </div>
+    <div class="pain-box">
+      ⚠️ Pain kép: không chỉ nhân viên quên xử lý yêu cầu — mà khi phát hiện sót, họ phải nhắn ngược lại quản lý ("em quên thu 63k phòng 205 ạ") → quản lý lại phải xử lý thủ công, mất thêm thời gian
+    </div>
+  </div>
+
+  <!-- Hypothesis -->
+  <div class="sl">Bước 1 — Hypothesis</div>
+  <div class="card" style="margin-bottom:10px; border-left: 3px solid #7F77DD; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;">
+    <span class="tag tag-purple">Value risk</span>
+    <p class="h3">"Nhân viên khách sạn chịu ghi lại yêu cầu đặc biệt của khách vào một chỗ chung và cập nhật trạng thái xử lý — thay vì để thông tin rải rác, bị mất khi bàn giao ca, và phải báo ngược lại quản lý khi phát hiện sót."</p>
+    <hr class="divider">
+    <div class="grid2">
+      <div>
+        <p class="ml">Nếu sai thì chuyện gì xảy ra?</p>
+        <p class="mv">Nhân viên vẫn nhớ miệng, vẫn bỏ sót, vẫn nhắn "em quên thu 63k" sau khi xảy ra — sản phẩm không ngăn được vòng lặp này</p>
+      </div>
+      <div>
+        <p class="ml">Vì sao chọn cái này?</p>
+        <p class="mv">Đây là hành vi nền — nếu nhân viên không chịu ghi tập trung, mọi tính năng AI phía trên đều không có input. Và nếu không có nhắc đúng giờ, vòng lặp "quên → báo sau" vẫn tiếp tục.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current approach -->
+  <div class="sl">Bước 2 — Current approach</div>
+  <div class="grid2" style="margin-bottom:10px;">
+    <div class="card">
+      <span class="tag tag-gray">Đang định làm</span>
+      <p class="body">Build app: nhân viên nhập yêu cầu khách, AI tổng hợp theo phòng, tự nhắc nhở trước các mốc checkout, quản lý xem dashboard tổng</p>
+    </div>
+    <div class="card" style="border-left: 3px solid #E24B4A; border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) 0;">
+      <span class="tag tag-coral">Vì sao đang đắt / chậm</span>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Phải build xong app mới test được hành vi ghi chép thật của nhân viên</p></div>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Nhân viên phải học công cụ mới — rào cản cao</p></div>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Chưa biết họ có chịu ghi đủ không, và có chịu cập nhật trạng thái không</p></div>
+    </div>
+  </div>
+
+  <!-- 4 cách test -->
+  <div class="sl">Bước 3 — 4 cách test rẻ hơn + artifact</div>
+  <div class="grid4" style="margin-bottom:10px;">
+
+    <!-- CÁCH A -->
+    <div class="card">
+      <span class="tag tag-purple">Cách A</span>
+      <p class="h3" style="font-size:13px;">Zalo Group "Note Khách"</p>
+      <span class="cost-badge"><i class="ti ti-coin" aria-hidden="true"></i> 0đ</span>
+      <span class="time-badge"><i class="ti ti-clock" aria-hidden="true"></i> 20 phút</span>
+
+      <p class="ml">Nhân viên thấy gì?</p>
+      <p class="mv">Group Zalo riêng — ai nhận yêu cầu từ khách thì nhắn vào group theo format: Phòng + Yêu cầu + Deadline</p>
+
+      <p class="ml">Phía sau làm gì?</p>
+      <p class="mv">Không cần bot, không cần OA — nhân viên tự nhắn, cả team thấy, cuối ca 1 người tổng hợp tay</p>
+
+      <hr class="divider">
+      <div class="ml" style="margin-bottom:4px;">Artifact — mock Zalo</div>
+      <div class="zalo-wrap">
+        <p class="zalo-name">Minh (lễ tân)</p>
+        <div class="zalo-sys">P205 — khử mùi trước 14h 🌿</div>
+        <p class="zalo-name">Lan (buồng phòng)</p>
+        <div class="zalo-sys">P312 — thêm gối, có em bé 🍼</div>
+        <p class="zalo-name">Minh (lễ tân)</p>
+        <div class="zalo-warn">⚠️ P408 — quên thu 63k, khách đã checkout rồi anh ơi</div>
+        <p class="zalo-name" style="text-align:right;">Hoa (quản lý)</p>
+        <div class="zalo-rep">😓 Lần sau nhớ điền vào group trước khi khách ra nhé</div>
+      </div>
+
+      <hr class="divider">
+      <div class="row"><div class="dot dot-green"></div><p class="body" style="font-size:11px;">Học được: Có tự ghi không? Bao lâu sau mới ghi? Loại nào hay quên?</p></div>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Giới hạn: Thông tin vẫn nằm rải trong chat, không nhắc đúng giờ</p></div>
+    </div>
+
+    <!-- CÁCH B -->
+    <div class="card">
+      <span class="tag tag-teal">Cách B</span>
+      <p class="h3" style="font-size:13px;">Google Sheet "Bảng Yêu Cầu"</p>
+      <span class="cost-badge"><i class="ti ti-coin" aria-hidden="true"></i> 0đ</span>
+      <span class="time-badge"><i class="ti ti-clock" aria-hidden="true"></i> 1 giờ</span>
+
+      <p class="ml">Nhân viên thấy gì?</p>
+      <p class="mv">Link Sheet ghim trong Zalo — mỗi phòng 1 dòng, có cột Yêu cầu / Deadline / Trạng thái. Tick "Đã xử lý" khi xong.</p>
+
+      <p class="ml">Phía sau làm gì?</p>
+      <p class="mv">Tạo sheet template sẵn, gửi link vào group. Nhắc nhân viên điền khi nhận yêu cầu từ khách.</p>
+
+      <hr class="divider">
+      <div class="ml" style="margin-bottom:4px;">Artifact — sheet mock</div>
+      <div class="screen-mock">
+        <div class="screen-row" style="font-weight:500;font-size:10px;">
+          <span>Phòng</span><span>Yêu cầu</span><span>Deadline</span><span>Trạng thái</span>
+        </div>
+        <div class="screen-row">
+          <span>205</span><span style="color:var(--color-text-secondary);">Khử mùi</span><span>14h</span><span class="badge-done">✓ Xong</span>
+        </div>
+        <div class="screen-row">
+          <span>312</span><span style="color:var(--color-text-secondary);">Thêm gối</span><span>15h</span><span class="badge-pending">Đang làm</span>
+        </div>
+        <div class="screen-row">
+          <span>408</span><span style="color:var(--color-text-secondary);">Thu 63k</span><span>12h</span><span class="badge-urgent">⚠ Bỏ sót</span>
+        </div>
+        <div class="screen-row">
+          <span>501</span><span style="color:var(--color-text-secondary);">Wake-up 6h</span><span>6h sáng</span><span class="badge-pending">Chưa làm</span>
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="row"><div class="dot dot-green"></div><p class="body" style="font-size:11px;">Học được: Tỉ lệ tick, yêu cầu nào hay bỏ sót, ca nào hay quên điền</p></div>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Giới hạn: Phải nhớ mở link, không tự nhắc khi đến giờ</p></div>
+    </div>
+
+    <!-- CÁCH C -->
+    <div class="card">
+      <span class="tag tag-blue">Cách C</span>
+      <p class="h3" style="font-size:13px;">Google Calendar Nhắc Giờ</p>
+      <span class="cost-badge"><i class="ti ti-coin" aria-hidden="true"></i> 0đ</span>
+      <span class="time-badge"><i class="ti ti-clock" aria-hidden="true"></i> 30 phút</span>
+
+      <p class="ml">Nhân viên thấy gì?</p>
+      <p class="mv">Nhận notification điện thoại đúng giờ — "P408 — nhắc thu 63k trước checkout 12h". Không cần nhớ, không cần mở app riêng.</p>
+
+      <p class="ml">Phía sau làm gì?</p>
+      <p class="mv">1 người trong team tạo event Google Calendar chia sẻ cho cả nhóm mỗi khi có yêu cầu mới. Đặt reminder trước deadline 30–60 phút.</p>
+
+      <hr class="divider">
+      <div class="ml" style="margin-bottom:4px;">Artifact — mock Calendar</div>
+      <div class="screen-mock">
+        <div style="font-size:11px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;">Hôm nay — Ca sáng</div>
+        <div class="cal-event">
+          <div class="cal-time">11:30 — nhắc trước 30 phút</div>
+          P408 · Thu 63k trước checkout 12h ⚠️
+        </div>
+        <div class="cal-event">
+          <div class="cal-time">13:00</div>
+          P312 · Thêm gối + nước nóng cho em bé 🍼
+        </div>
+        <div class="cal-event-warn">
+          <div class="cal-time">13:30 — nhắc trước 30 phút</div>
+          P205 · Khử mùi trước khi khách vào 14h 🌿
+        </div>
+        <div class="cal-event">
+          <div class="cal-time">Ngày mai 05:45</div>
+          P501 · Wake-up call lúc 6h ⏰
+        </div>
+      </div>
+
+      <hr class="divider">
+      <div class="row"><div class="dot dot-green"></div><p class="body" style="font-size:11px;">Học được: Nhắc đúng giờ có giảm bỏ sót không? Nhân viên có xử lý kịp sau khi nhận notification không?</p></div>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Giới hạn: Vẫn cần 1 người tạo event tay, nhân viên phải có tài khoản Google</p></div>
+    </div>
+
+    <!-- CÁCH D -->
+    <div class="card">
+      <span class="tag tag-amber">Cách D</span>
+      <p class="h3" style="font-size:13px;">Phiếu Note In Sẵn + Báo Cáo Sót</p>
+      <span class="cost-badge"><i class="ti ti-coin" aria-hidden="true"></i> ~10k</span>
+      <span class="time-badge"><i class="ti ti-clock" aria-hidden="true"></i> 15 phút</span>
+
+      <p class="ml">Nhân viên thấy gì?</p>
+      <p class="mv">Tờ phiếu tại quầy — điền yêu cầu khách, tick khi xong. Nếu sót thì ghi vào ô "Sự cố" cuối phiếu thay vì nhắn Zalo riêng cho quản lý.</p>
+
+      <p class="ml">Phía sau làm gì?</p>
+      <p class="mv">In 30–50 phiếu, nhờ khách sạn quen dùng thử 3 ngày. Đếm bao nhiêu ô "Sự cố" được điền — và loại sót nào xuất hiện nhiều nhất.</p>
+
+      <hr class="divider">
+      <div class="ml" style="margin-bottom:4px;">Artifact — mẫu phiếu</div>
+      <div class="note-paper">
+        <div style="font-weight:500;margin-bottom:6px;font-size:12px;">📋 Phiếu yêu cầu — Phòng 408 · Ca sáng</div>
+        <div>☑ Thu tiền phòng: 63,000đ · Deadline 12h</div>
+        <div>☐ Khử mùi phòng</div>
+        <div>☐ Wake-up call: ______</div>
+        <div>☐ Yêu cầu khác: ___________</div>
+        <hr style="border:none;border-top:1px dashed #BA7517;margin:8px 0;">
+        <div style="font-size:10px;font-weight:500;margin-bottom:4px;">Sự cố / Bỏ sót trong ca:</div>
+        <div style="font-size:11px;font-style:italic;">Quên thu 63k — khách checkout rồi mới nhớ</div>
+      </div>
+
+      <hr class="divider">
+      <div class="row"><div class="dot dot-green"></div><p class="body" style="font-size:11px;">Học được: Loại sót nào phổ biến? Nhân viên có ghi vào ô "Sự cố" không hay vẫn nhắn Zalo?</p></div>
+      <div class="row"><div class="dot dot-red"></div><p class="body" style="font-size:11px;">Giới hạn: Không realtime, phiếu dễ thất lạc, không scale được</p></div>
+    </div>
+
+  </div>
+
+  <!-- So sánh -->
+  <div class="sl">Bước 4 — So sánh trade-off</div>
+  <div class="card" style="margin-bottom:10px; overflow-x:auto;">
+    <div class="compare-row" style="border-bottom: 0.5px solid var(--color-border-secondary);">
+      <div class="cl"></div>
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-primary);">A — Zalo Group</div>
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-primary);">B — Google Sheet</div>
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-primary);">C — Calendar</div>
+      <div style="font-size:11px;font-weight:500;color:var(--color-text-primary);">D — Phiếu giấy</div>
+    </div>
+    <div class="compare-row">
+      <div class="cl">Chi phí</div>
+      <div class="cc">0đ</div>
+      <div class="cc">0đ</div>
+      <div class="cc">0đ</div>
+      <div class="cc">~10k in giấy</div>
+    </div>
+    <div class="compare-row">
+      <div class="cl">Gần hành vi thật?</div>
+      <div class="cc">Cao — Zalo sẵn có</div>
+      <div class="cc">Trung bình — phải nhớ mở</div>
+      <div class="cc">Cao — notification tự bật</div>
+      <div class="cc">Cao — thao tác tại quầy</div>
+    </div>
+    <div class="compare-row">
+      <div class="cl">Giải được pain "quên → báo sau"?</div>
+      <div class="cc">Một phần — thấy được nhưng không nhắc</div>
+      <div class="cc">Một phần — thấy được nhưng không nhắc</div>
+      <div class="cc">Tốt nhất — nhắc trước khi sót xảy ra</div>
+      <div class="cc">Ghi lại sau khi sót — không ngăn được</div>
+    </div>
+    <div class="compare-row">
+      <div class="cl">Học được gì rõ?</div>
+      <div class="cc">Có tự ghi không, ghi đủ không</div>
+      <div class="cc">Tỉ lệ xử lý, loại yêu cầu phổ biến</div>
+      <div class="cc">Nhắc giờ có giảm bỏ sót không</div>
+      <div class="cc">Loại sót nào hay gặp nhất</div>
+    </div>
+    <div class="compare-row">
+      <div class="cl">Nên chạy khi nào?</div>
+      <div class="cc">Test ngay hôm nay</div>
+      <div class="cc">Song song với A</div>
+      <div class="cc">Sau A+B — khi đã biết loại yêu cầu phổ biến</div>
+      <div class="cc">Khách sạn nhỏ, ít dùng điện thoại</div>
+    </div>
+  </div>
+
+  <!-- Present prep -->
+  <div class="sl">Bước 5 — Chuẩn bị present</div>
+  <div class="card">
+    <p class="body" style="font-style:italic; margin-bottom:10px;">"Khách sạn đang có một vòng lặp tốn kém: khách có yêu cầu → nhân viên quên → xử lý sai hoặc sót → phải nhắn lại quản lý 'em quên thu 63k'. Mình muốn test xem nhân viên có chịu ghi tập trung và được nhắc đúng giờ không — và đây là 4 cách test điều đó ngay hôm nay, không cần build gì."</p>
+    <hr class="divider">
+    <div class="grid2">
+      <div>
+        <p class="ml">Câu hỏi mời phản biện 1</p>
+        <p class="mv">Theo các bạn, nhân viên không ghi yêu cầu khách vì lười — hay vì không thấy hậu quả trực tiếp với mình?</p>
+      </div>
+      <div>
+        <p class="ml">Câu hỏi mời phản biện 2</p>
+        <p class="mv">Google Calendar có thật sự phù hợp với nhân viên lễ tân khách sạn Việt Nam không, hay rào cản tài khoản Google sẽ là vấn đề lớn?</p>
+      </div>
+    </div>
+  </div>
+
+</div>
