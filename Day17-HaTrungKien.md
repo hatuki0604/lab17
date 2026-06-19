@@ -6,7 +6,7 @@
 |---|---|
 | Mã học viên | 2A202600709 |
 | Họ tên | Hà Trung Kiên|
-| Dự án đang làm | Build-up Chain |
+| Dự án đang làm | Opstream - hỗ trợ lễ tân khách sạn |
 | Vai trò trong dự án | Tìm ra 4 phương pháp rẻ nhất |
 
 ## Build-up Chain
