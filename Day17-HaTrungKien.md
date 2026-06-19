@@ -7,13 +7,13 @@
 | Mã học viên | 2A202600709 |
 | Họ tên | Hà Trung Kiên|
 | Dự án đang làm | Build-up Chain |
-| Vai trò trong dự án | Member |
+| Vai trò trong dự án | Tìm ra 4 phương pháp rẻ nhất |
 
 ## Build-up Chain
 | Hạng mục | Link / ghi chú |
 |---|---|
-| Day 16 artifact 02 | [build-chain.html](./build-chain.html) |
-| Present board / frame / file | [build-chain.html](./build-chain.html) |
+| Day 16 artifact 02 | build-chain.html |
+| Present board / frame / file | build-chain.html |
 | Công cụ làm studio này | Claude |
 
 ---
